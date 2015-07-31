@@ -1,0 +1,5 @@
+build
+.lock-waf*
+.idea/
+CMakeLists.txt
+.DS_Store
