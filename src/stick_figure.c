@@ -268,38 +268,38 @@ void stick_figure_step_animation(StickFigure *stick_figure, int64_t epoch_ms) {
   if (epoch_ms - stick_figure->frame_start <= end_skeleton.ani_duration) {
     // must be a better way to do this without using an array for the figure's points
     stick_figure->cur_skeleton.head = interpolation_gpoint(stick_figure->old_skeleton.head,
-      end_skeleton.head, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.head, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.chest = interpolation_gpoint(stick_figure->old_skeleton.chest,
-      end_skeleton.chest, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.chest, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.elbow_r = interpolation_gpoint(stick_figure->old_skeleton.elbow_r,
-      end_skeleton.elbow_r, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.elbow_r, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.hand_r = interpolation_gpoint(stick_figure->old_skeleton.hand_r,
-      end_skeleton.hand_r, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.hand_r, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.elbow_l = interpolation_gpoint(stick_figure->old_skeleton.elbow_l,
-      end_skeleton.elbow_l, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.elbow_l, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.hand_l = interpolation_gpoint(stick_figure->old_skeleton.hand_l,
-      end_skeleton.hand_l, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.hand_l, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.waist = interpolation_gpoint(stick_figure->old_skeleton.waist,
-      end_skeleton.waist, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.waist, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.knee_r = interpolation_gpoint(stick_figure->old_skeleton.knee_r,
-      end_skeleton.knee_r, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.knee_r, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.foot_r = interpolation_gpoint(stick_figure->old_skeleton.foot_r,
-      end_skeleton.foot_r, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.foot_r, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.knee_l = interpolation_gpoint(stick_figure->old_skeleton.knee_l,
-      end_skeleton.knee_l, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.knee_l, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
     stick_figure->cur_skeleton.foot_l = interpolation_gpoint(stick_figure->old_skeleton.foot_l,
-      end_skeleton.foot_l, epoch_ms - stick_figure->frame_start, end_skeleton.ani_duration,
-      end_skeleton.interp_curve);
+      end_skeleton.foot_l, (int32_t)(epoch_ms - stick_figure->frame_start),
+      end_skeleton.ani_duration, end_skeleton.interp_curve);
   }
   else {
     memcpy(&stick_figure->cur_skeleton, &end_skeleton, sizeof(SkeletonFrame));

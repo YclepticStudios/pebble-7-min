@@ -29,6 +29,7 @@ typedef struct WindowData {
 
   StickFigure   *stick_figure;  //!< Pointer to the stick figure which will be used
   Button        *button;        //!< Pointer to the button in the center of the screen
+  bool          manual_change;  //!< Set to true when changing the pose to avoid vibrating
 
   int64_t       start_epoch;    //!< The epoch in milliseconds when the workout was started
   AppTimer      *app_timer;     //!< Main timer for refreshing
@@ -115,12 +116,14 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   StickFigurePose old_pose = stick_figure_get_pose(data->stick_figure);
   if (cur_pose != old_pose) {
     // vibrate if not at start or end
-    if (old_pose != PoseWaitingForStart && old_pose != PoseDone && cur_pose != PoseWaitingForStart){
+    if (!data->manual_change){
       vibes_short_pulse();
     }
     // set the new pose
     stick_figure_set_pose(data->stick_figure, cur_pose, epoch_ms);
   }
+  // set manual change to false to enable vibrations again
+  data->manual_change = false;
 
   // draw the visuals on the screen
   drawing_background(ctx, window_size, angle, cur_pose, NULL);
@@ -152,6 +155,8 @@ static void prv_up_click_handler(ClickRecognizerRef recognizer, void *context) {
       run_time >= EXERCISE_TOTAL_PERIOD - period_time_total &&
       run_time < EXERCISE_ACTIVITY_COUNT * EXERCISE_TOTAL_PERIOD) {
     data->start_epoch += EXERCISE_TOTAL_PERIOD - period_time_total;
+    // set manual change to prevent vibration
+    data->manual_change = true;
   }
 }
 
@@ -176,6 +181,8 @@ static void prv_select_click_handler(ClickRecognizerRef recognizer, void *contex
   }
   // change button state
   drawing_button_set_state(data->button, epoch_ms, !paused);
+  // set manual change to prevent vibration
+  data->manual_change = true;
 }
 
 
@@ -191,6 +198,8 @@ static void prv_down_click_handler(ClickRecognizerRef recognizer, void *context)
   // move to start of current activity or previous activity if within threshold
   if (run_time < EXERCISE_ACTIVITY_COUNT * EXERCISE_TOTAL_PERIOD) {
     data->start_epoch -= period_time_total - period_time;
+    // set manual change to prevent vibration
+    data->manual_change = true;
   }
 }
 
