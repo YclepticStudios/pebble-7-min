@@ -18,39 +18,32 @@
   </head>
 
   <body>
-    <h1 class='title'>Slate Example Configuration</h1>
+    <h1 class='title'>7 Min+</h1>
 
     <div class='item-container'>
       <div class='item-container-content'>
         <div class='item'>
-          Use this configuration page to choose the settings you would like applied to this app.
+          7 Min+ is a simple Pebble application to walk you though the 7 minute workout.
+          It also pushes a pin to your timeline when you finish your workout, and has an
+          option to remind you to workout every day at a certain time.
         </div>
       </div>
     </div>
 
     <div class='item-container'>
-      <div class='item-container-header'>Customizability</div>
+      <div class='item-container-header'>Reminder</div>
       <div class='item-container-content'>
+        <label class="item">
+          Enabled
+          <input type="checkbox" class="item-toggle" id="toggle-enabled" checked>
+        </label>
         <label class='item'>
-          Background Color
-          <input id='background_color_picker' type='text' class='item-color item-color-sunny' value='#000000'>
+          Time
+          <input type="time" class="item-time" id="time-time" value="8:00">
         </label>
       </div>
       <div class='item-container-footer'>
-        Choose the app's background color. Used if High Contrast Mode is not selected. Note: Only available on Basalt watches that support many colors.
-      </div>
-    </div>
-
-    <div class='item-container'>
-      <div class='item-container-header'>Accessibility</div>
-      <div class='item-container-content'>
-        <label class='item'>
-          High Contrast Mode
-          <input id='high_contrast_checkbox' type='checkbox' class='item-toggle'>
-        </label>
-      </div>
-      <div class='item-container-footer'>
-        This switches the app colors to a higher contrast set that promotes readability in low light.
+        You will be sent a pin with a reminder every day at this time if enabled.
       </div>
     </div>
 
@@ -62,17 +55,17 @@
   </body>
   <script>
   function getConfigData() {
-    var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
+    var enabledToggle = document.getElementById('toggle-enabled');
+    var timeTime = document.getElementById('time-time');
  
     var options = {
-      'background_color': backgroundColorPicker.value,
-      'high_contrast': highContrastCheckbox.checked
+      'reminder_enabled': enabledToggle.value,
+      'reminder_time': timeTime.checked
     };
 
     // Save for next launch
-    localStorage['background_color'] = options['background_color'];
-    localStorage['high_contrast'] = options['high_contrast'];
+    localStorage['reminder_enabled'] = options['reminder_enabled'];
+    localStorage['reminder_time'] = options['reminder_time'];
 
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -100,13 +93,13 @@
   });
 
   (function() {
-    var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
+    var enabledToggle = document.getElementById('toggle-enabled');
+    var timeTime = document.getElementById('time-time');
 
     // Load any previously saved configuration, if available
-    if(localStorage['high_contrast']) {
-      highContrastCheckbox.checked = JSON.parse(localStorage['high_contrast']);
-      backgroundColorPicker.value = localStorage['background_color'];
+    if(localStorage['reminder_enabled']) {
+      enabledToggle.checked = JSON.parse(localStorage['reminder_enabled']);
+      timeTime.value = localStorage['reminder_time'];
     }
   })();
   </script>
