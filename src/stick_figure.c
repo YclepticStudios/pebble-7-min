@@ -342,3 +342,37 @@ void stick_figure_draw(StickFigure *stick_figure, GContext *ctx, GPoint offset) 
   prv_drawing_thick_line(ctx, prv_gpoint_add(skeleton.knee_l, offset),
     prv_gpoint_add(skeleton.foot_l, offset));
 }
+
+
+// Draw any props that need to go with the stick figure
+void stick_figure_draw_props(GContext *ctx, StickFigurePose pose, GPoint offset) {
+  // draw props based on current pose with no animation
+  switch (pose) {
+    case PoseWallSit:
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(-12, -44), offset),
+                             prv_gpoint_add(GPoint(-12, 41), offset));
+      break;
+    case PoseStepUps:
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(3, 51), offset),
+                             prv_gpoint_add(GPoint(3, 36), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(18, 36), offset),
+                             prv_gpoint_add(GPoint(3, 36), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(18, 51), offset),
+                             prv_gpoint_add(GPoint(18, 36), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(22, 17), offset),
+                             prv_gpoint_add(GPoint(18, 36), offset));
+      break;
+    case PoseCharDips:
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(4, 37), offset),
+                             prv_gpoint_add(GPoint(4, 22), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(19, 22), offset),
+                             prv_gpoint_add(GPoint(4, 22), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(19, 37), offset),
+                             prv_gpoint_add(GPoint(19, 22), offset));
+      prv_drawing_thick_line(ctx, prv_gpoint_add(GPoint(23, 3), offset),
+                             prv_gpoint_add(GPoint(19, 22), offset));
+      break;
+    default:
+      break;
+  }
+}

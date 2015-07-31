@@ -126,6 +126,7 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   drawing_background(ctx, window_size, angle, cur_pose, NULL);
   drawing_button_draw(data->button, ctx, window_size, cur_pose);
   stick_figure_draw(data->stick_figure, ctx, offset);
+  stick_figure_draw_props(ctx, cur_pose, offset);
   // draw text
   uint8_t cur_activity = run_time / EXERCISE_TOTAL_PERIOD + PoseJumpingJacks;
   if (cur_pose == PoseDone) {

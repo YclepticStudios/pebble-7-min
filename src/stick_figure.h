@@ -82,3 +82,9 @@ void stick_figure_step_animation(StickFigure *stick_figure, int64_t epoch_ms);
 //! @param stick_figure The stick figure to draw onto the graphics context
 //! @param offset The offset with which to draw the stick figure
 void stick_figure_draw(StickFigure *stick_figure, GContext *ctx, GPoint offset);
+
+//! Draw any props needed by the stick figure
+//! @param ctx The graphics context that will be drawn onto
+//! @param pose The current stick figure pose that the props will be drawn for
+//! @param offset The offset with which to draw the stick figure
+void stick_figure_draw_props(GContext *ctx, StickFigurePose pose, GPoint offset);
