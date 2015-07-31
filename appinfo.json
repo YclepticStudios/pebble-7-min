@@ -1,0 +1,30 @@
+{
+  "uuid": "eab3b5d8-eeb6-4fb2-afdc-98bc49d14c95",
+  "shortName": "7-Min+",
+  "longName": "7-Min+",
+  "companyName": "Ycleptic Studios",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "projectType": "native",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "KEY_EXERSIZED": 5
+  },
+  "resources": {
+    "media": [
+      {
+          "type": "png",
+          "name": "IMAGE_GRID_1",
+          "file": "images/grid_4x4_1.png"
+      },
+      {
+          "type": "png",
+          "name": "IMAGE_GRID_2",
+          "file": "images/grid_4x4_2.png"
+      }
+      ]
+  }
+}
