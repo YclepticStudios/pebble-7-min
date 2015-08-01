@@ -99,7 +99,7 @@
 
     // Load any previously saved configuration, if available
     if(localStorage['reminder_enabled'] && localStorage['reminder_time']) {
-      enabledToggle.checked = JSON.parse(localStorage['reminder_enabled']);
+      enabledToggle.checked = localStorage['reminder_enabled'];
       timeTime.value = localStorage['reminder_time'];
     }
   })();
