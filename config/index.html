@@ -38,8 +38,8 @@
           <input type="checkbox" class="item-toggle" id="toggle-enabled" checked>
         </label>
         <label class='item'>
-          Time
-          <input type="time" class="item-time" id="time-time" value="8:00">
+          When
+          <input type="time" class="item-time" id="time-time" value="8:00" step="900">
         </label>
       </div>
       <div class='item-container-footer'>
@@ -97,10 +97,10 @@
     var timeTime = document.getElementById('time-time');
 
     // Load any previously saved configuration, if available
-    if(localStorage['reminder_enabled']) {
-      enabledToggle.checked = JSON.parse(localStorage['reminder_enabled']);
-      timeTime.value = localStorage['reminder_time'];
-    }
+//    if(localStorage['reminder_enabled']) {
+//      enabledToggle.checked = JSON.parse(localStorage['reminder_enabled']);
+//      timeTime.value = localStorage['reminder_time'];
+//    }
   })();
   </script>
 </html>
