@@ -13,6 +13,8 @@
 #include "stick_figure.h"
 #include "drawing.h"
 
+#define KEY_EXERCISED 5 // key used when sending app message to phone
+
 #define REFRESH_RATE_FPS 30
 #define REFRESH_RATE_MS_PER_FRAME 1000 / REFRESH_RATE_FPS
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
@@ -53,8 +55,8 @@ static int64_t prv_get_epoch_ms(void) {
 //! Gets the timing of the current exercise
 //! @param data The window user data
 //! @param epoch_ms The current epoch in milliseconds
-//! @param period_time A pointer to an int, an output which is the time into the current exersize
-//! @param period_time_total A pointer to an int, an output which is the current exersize duration
+//! @param period_time A pointer to an int, an output which is the time into the current exercise
+//! @param period_time_total A pointer to an int, an output which is the current exercise duration
 static void prv_get_current_timing(WindowData *data, int64_t epoch_ms, int32_t *run_time,
                                    int32_t *period_time, int32_t *period_time_total) {
   // get current time into the workout in milliseconds
@@ -64,6 +66,20 @@ static void prv_get_current_timing(WindowData *data, int64_t epoch_ms, int32_t *
   // get total duration of current period
   (*period_time_total) = ((*run_time) % EXERCISE_TOTAL_PERIOD < EXERCISE_ACTIVITY_PERIOD) ?
                          EXERCISE_ACTIVITY_PERIOD : EXERCISE_REST_PERIOD;
+}
+
+
+//! Sends a message to the phone to add a timeline pin
+static void prv_phone_send_pin(void) {
+  // begin iterator
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  // write data
+  dict_write_uint8(iter, KEY_EXERCISED, 0);
+  dict_write_end(iter);
+  // send
+  int res = app_message_outbox_send();
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Pin Sent: %d", res);
 }
 
 
@@ -106,7 +122,7 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
                                                PoseJumpingJacks);
   if (data->start_epoch <= 0) {
     cur_pose = PoseWaitingForStart;
-  } else if (run_time > EXERCISE_TOTAL_PERIOD * EXERCISE_ACTIVITY_COUNT - EXERCISE_REST_PERIOD) {
+  } else if (run_time >= EXERCISE_TOTAL_PERIOD * EXERCISE_ACTIVITY_COUNT - EXERCISE_REST_PERIOD) {
     data->start_epoch = epoch_ms - EXERCISE_TOTAL_PERIOD * EXERCISE_ACTIVITY_COUNT;
     cur_pose = PoseDone;
     angle = 0;
@@ -118,9 +134,14 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
     // vibrate if not at start or end
     if (!data->manual_change){
       vibes_short_pulse();
+      // send a pin if last exercise
+      if (cur_pose == PoseDone) {
+        prv_phone_send_pin();
+      }
     }
     // set the new pose
     stick_figure_set_pose(data->stick_figure, cur_pose, epoch_ms);
+    printf("Value: %d", (int)cur_pose);
   }
   // set manual change to false to enable vibrations again
   data->manual_change = false;
@@ -250,6 +271,9 @@ static void prv_window_load_handler(Window *window) {
 
     // set some window data properties
     data->start_epoch = 0;
+
+    // open app message communication with the phone
+    app_message_open(APP_MESSAGE_INBOX_SIZE_MINIMUM, APP_MESSAGE_OUTBOX_SIZE_MINIMUM);
 
     // start first refresh
     data->app_timer = app_timer_register(REFRESH_RATE_MS_PER_FRAME, prv_app_timer_callback, data);

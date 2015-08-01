@@ -1,9 +1,13 @@
-// ********** Timeline ********** //
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Timeline Pins
+//
+
 // pins
 var curDate = new Date();
-// "Exersized" pin
-var exersizedPIN = {
-  "id": String.prototype.concat("7-min-workout-exersized", Math.random().toString(36).substring(10)),
+
+// "Exercised" pin
+var exercisedPIN = {
+  "id": String.prototype.concat("7-min-workout-exercised", Math.random().toString(36).substring(10)),
   "time": curDate.toISOString(),
   "layout": {
     "type": "genericPin",
@@ -19,14 +23,18 @@ var reminderPIN = {
   "time": "curDate.toISOString()",
   "layout": {
     "type": "genericPin",
-    "title": "Exersize!",
+    "title": "Exercise!",
     "subtitle": "Remember to do your 7 Min Workout.",
     "tinyIcon": "system://images/SCHEDULED_EVENT",
     "body": "C'mon! What are you waiting for? It's only 7 min 50 sec long :)"
   }
 };
 
-// ***** Timeline Lib ***** //
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Timeline Library
+//
+
 // The Timeline public URL root
 var API_URL_ROOT = 'https://timeline-api.getpebble.com/';
 /**
@@ -76,25 +84,35 @@ function deleteUserPin(pin, callback) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Configuration Page
+//
 
-// ********** AppMessage ********** //
-// send message to phone
-function send_to_phone(){
-  // create dictionary
-  var dict = {
-    'KEY_EXERSIZED':0
-  };
+// Show the configuration page when the "gear" icon is clicked
+Pebble.addEventListener('showConfiguration', function() {
+    var url = 'https://yclepticstudios.github.io/pebble-7-min/config/index.html';
+    console.log('Showing configuration page: ' + url);
 
-  // send to pebble
-  Pebble.sendAppMessage(dict,
-    function(e) {
-      console.log('Send successful.');
-    },
-    function(e) {
-      console.log('Send failed!');
-    }
-  );
-}
+    Pebble.openURL(url);
+});
+
+// Return data to C application when configuration page is closed
+Pebble.addEventListener('webviewclosed', function(e) {
+    var configData = JSON.parse(decodeURIComponent(e.response));
+    console.log('Configuration page returned: ' + JSON.stringify(configData));
+
+    // Send to watchapp
+    Pebble.sendAppMessage(configData, function() {
+        console.log('Send successful: ' + JSON.stringify(configData));
+    }, function() {
+        console.log('Send failed!');
+    });
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// App Message
+//
 
 // message received
 Pebble.addEventListener('appmessage', function(e) {
@@ -103,7 +121,7 @@ Pebble.addEventListener('appmessage', function(e) {
     // check that it is valid to send pins i.e. its SDK 3.0 or greater
     if (typeof Pebble.getTimelineToken == 'function') {
       // insert pin
-      insertUserPin(exersizedPIN, function (responseText) {
+      insertUserPin(exercisedPIN, function (responseText) {
         console.log('Pin Sent Result: ' + responseText);
       });
     }
