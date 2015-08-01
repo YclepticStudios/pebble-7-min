@@ -55,53 +55,53 @@
   </body>
   <script>
 
-//  function getConfigData() {
-//    var enabledToggle = document.getElementById('toggle-enabled');
-//    var timeTime = document.getElementById('time-time');
-//
-//    var options = {
-//      'reminder_enabled': enabledToggle.checked,
-//      'reminder_time': timeTime.value
-//    };
-//
-//    // Save for next launch
-//    localStorage['reminder_enabled'] = options['reminder_enabled'];
-//    localStorage['reminder_time'] = options['reminder_time'];
-//
-//    console.log('Got options: ' + JSON.stringify(options));
-//    return options;
-//  }
-//
-//  function getQueryParam(variable, defaultValue) {
-//    var query = location.search.substring(1);
-//    var vars = query.split('&');
-//    for (var i = 0; i < vars.length; i++) {
-//      var pair = vars[i].split('=');
-//      if (pair[0] === variable) {
-//        return decodeURIComponent(pair[1]);
-//      }
-//    }
-//    return defaultValue || false;
-//  }
-//
-//  var submitButton = document.getElementById('submit_button');
-//  submitButton.addEventListener('click', function() {
-//    console.log('Submit');
-//
-//    // Set the return URL depending on the runtime environment
-//    var return_to = getQueryParam('return_to', 'pebblejs://close#');
-//    document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
-//  });
-//
-//  (function() {
-//    var enabledToggle = document.getElementById('toggle-enabled');
-//    var timeTime = document.getElementById('time-time');
-//
-//    // Load any previously saved configuration, if available
-//    if(localStorage['reminder_enabled'] && localStorage['reminder_time']) {
-//      enabledToggle.checked = localStorage['reminder_enabled'];
-//      timeTime.value = localStorage['reminder_time'];
-//    }
-//  })();
+  function getConfigData() {
+    var enabledToggle = document.getElementById('toggle-enabled');
+    var timeTime = document.getElementById('time-time');
+
+    var options = {
+      'reminder_enabled': enabledToggle.checked,
+      'reminder_time': timeTime.value
+    };
+
+    // Save for next launch
+    localStorage['reminder_enabled'] = options['reminder_enabled'];
+    localStorage['reminder_time'] = options['reminder_time'];
+
+    console.log('Got options: ' + JSON.stringify(options));
+    return options;
+  }
+
+  function getQueryParam(variable, defaultValue) {
+    var query = location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (pair[0] === variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return defaultValue || false;
+  }
+
+  var submitButton = document.getElementById('submit_button');
+  submitButton.addEventListener('click', function() {
+    console.log('Submit');
+
+    // Set the return URL depending on the runtime environment
+    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+    document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
+  });
+
+  (function() {
+    var enabledToggle = document.getElementById('toggle-enabled');
+    var timeTime = document.getElementById('time-time');
+
+    // Load any previously saved configuration, if available
+    if(localStorage['reminder_enabled'] && localStorage['reminder_time']) {
+      enabledToggle.checked = localStorage['reminder_enabled'];
+      timeTime.value = localStorage['reminder_time'];
+    }
+  })();
   </script>
 </html>
