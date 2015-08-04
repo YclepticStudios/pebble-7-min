@@ -20,7 +20,7 @@ var exercisedPIN = {
 // "Reminder" pin
 var reminderPIN = {
   "id": "7-min-workout-reminder",
-  "time": "curDate.toISOString()",
+  "time": curDate.toISOString(),
   "layout": {
     "type": "genericPin",
     "title": "Exercise!",
@@ -83,6 +83,28 @@ function deleteUserPin(pin, callback) {
     timelineRequest(pin, 'DELETE', callback);
 }
 
+// send a series of pins to the timeline
+function timelineUpdatePins() {
+    // get time to remind
+    var date = curDate;
+    date.setHours(localStorage['reminder_time']);
+    // check if enabled
+    if (localStorage['reminder_enabled'] != true) {
+        date.setDate(-7);
+        return;
+    }
+    // update pins
+    for (var ii = 0; ii < 7; ii++) {
+        // insert pin
+        reminderPIN.time = date;
+        insertUserPin(reminderPIN, function (responseText) {
+            console.log('Pin Sent Result: ' + responseText);
+        });
+        // step date to tomorrow
+        date.setDate(1);
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Configuration Page
@@ -101,12 +123,9 @@ Pebble.addEventListener('webviewclosed', function(e) {
     var configData = JSON.parse(decodeURIComponent(e.response));
     console.log('Configuration page returned: ' + JSON.stringify(configData));
 
-    // Send to watchapp
-    Pebble.sendAppMessage(configData, function() {
-        console.log('Send successful: ' + JSON.stringify(configData));
-    }, function() {
-        console.log('Send failed!');
-    });
+    // save to persistent storage
+    localStorage['reminder_enabled'] = configData['reminder_enabled'];
+    localStorage['reminder_time'] = configData['reminder_time'];
 });
 
 
