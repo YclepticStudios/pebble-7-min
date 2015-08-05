@@ -12,7 +12,9 @@
     "watchface": false
   },
   "appKeys": {
-    "KEY_EXERSIZED": 5
+    "KEY_EXERSIZED": 0,
+    "KEY_CONFIG_OPENED": 1,
+    "KEY_CONFIG_CLOSED": 2
   },
   "resources": {
     "media": [
@@ -22,9 +24,14 @@
           "file": "images/grid_4x4_1.png"
       },
       {
-          "type": "png",
-          "name": "IMAGE_GRID_2",
-          "file": "images/grid_4x4_2.png"
+        "type": "png",
+        "name": "IMAGE_GRID_2",
+        "file": "images/grid_4x4_2.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_CONFIG",
+        "file": "images/config-required.png"
       }
       ]
   }

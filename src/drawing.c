@@ -247,3 +247,28 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, bool in_ac
     GRect(0, window_size.h - 20, window_size.w, 20), GTextOverflowModeTrailingEllipsis,
     GTextAlignmentCenter, NULL);
 }
+
+
+// Draw configure on phone dialog
+void drawing_config(GContext *ctx, GSize window_size, GBitmap *bmp) {
+  // set drawing colors
+  graphics_context_set_fill_color(ctx, COLOR_PAUSED_FORE);
+  graphics_context_set_text_color(ctx, GColorBlack);
+  // draw background
+  graphics_fill_rect(ctx, GRect(0, 0, window_size.w, window_size.h), 1, GCornerNone);
+  // draw image
+  GRect bmp_size = gbitmap_get_bounds(bmp);
+  graphics_context_set_compositing_mode(ctx, GCompOpSet);
+  graphics_draw_bitmap_in_rect(ctx, bmp, GRect((window_size.w - bmp_size.size.w) / 2,
+                                               (window_size.h - bmp_size.size.h) / 2 - 5,
+                                               bmp_size.size.w, bmp_size.size.h));
+  // draw title
+  graphics_draw_text(ctx, "7 Min+", fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD),
+                     GRect(0, 7, window_size.w, 28), GTextOverflowModeFill,
+                     GTextAlignmentCenter, NULL);
+  // draw footer
+  graphics_draw_text(ctx, "Set up in the Pebble app",
+                     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+                     GRect(10, 120, window_size.w - 20, 48), GTextOverflowModeWordWrap,
+                     GTextAlignmentCenter, NULL);
+}

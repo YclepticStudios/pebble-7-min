@@ -10,12 +10,15 @@
 //! @bug No known bugs
 
 #include <pebble.h>
+
 #include "stick_figure.h"
 #include "drawing.h"
 
-#define KEY_EXERCISED 5 // key used when sending app message to phone
+#define KEY_EXERCISED 0 // key used when sending app message to phone
+#define KEY_CONFIG_OPENED 1 // key used when configuration page is opened
+#define KEY_CONFIG_CLOSED 2 // key used when configuration page is closed
 
-#define REFRESH_RATE_FPS 30
+#define REFRESH_RATE_FPS 24
 #define REFRESH_RATE_MS_PER_FRAME 1000 / REFRESH_RATE_FPS
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
 #define EXERCISE_REST_PERIOD 10000 // length of a rest is in milliseconds
@@ -28,6 +31,7 @@
 typedef struct WindowData {
   Window        *window;        //!< Pointer to the window the data is attached to
   Layer         *draw_layer;    //!< Pointer to layer on which most things are drawn
+  GBitmap       *config_bmp;    //!< Pointer to "Configure in phone" message
 
   StickFigure   *stick_figure;  //!< Pointer to the stick figure which will be used
   Button        *button;        //!< Pointer to the button in the center of the screen
@@ -35,6 +39,7 @@ typedef struct WindowData {
 
   int64_t       start_epoch;    //!< The epoch in milliseconds when the workout was started
   AppTimer      *app_timer;     //!< Main timer for refreshing
+  bool          config_mode;    //!< Flag for when in configuration mode
 } WindowData;
 
 
@@ -108,6 +113,12 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   GPoint offset = GPoint(window_size.w / 2, window_size.h / 2);
   int64_t epoch_ms = prv_get_epoch_ms();
 
+  // if in configuration mode
+  if (data->config_mode) {
+    drawing_config(ctx, window_size, data->config_bmp);
+    return;
+  }
+
   // step animations
   stick_figure_step_animation(data->stick_figure, epoch_ms);
   drawing_button_step_animation(data->button, epoch_ms);
@@ -166,6 +177,10 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
 //! @param context User specified data passed into each click callback
 static void prv_up_click_handler(ClickRecognizerRef recognizer, void *context) {
   WindowData *data = (WindowData*)context;
+  // check if setting
+  if (data->config_mode) {
+    return;
+  }
   // get current timings
   int64_t epoch_ms = prv_get_epoch_ms();
   int32_t run_time, period_time, period_time_total;
@@ -187,6 +202,10 @@ static void prv_up_click_handler(ClickRecognizerRef recognizer, void *context) {
 //! @param context User specified data passed into each click callback
 static void prv_select_click_handler(ClickRecognizerRef recognizer, void *context) {
   WindowData *data = (WindowData*)context;
+  // check if setting
+  if (data->config_mode) {
+    return;
+  }
   // get current epoch in milliseconds
   int64_t epoch_ms = prv_get_epoch_ms();
   bool paused = data->start_epoch <= 0;
@@ -212,6 +231,10 @@ static void prv_select_click_handler(ClickRecognizerRef recognizer, void *contex
 //! @param context User specified data passed into each click callback
 static void prv_down_click_handler(ClickRecognizerRef recognizer, void *context) {
   WindowData *data = (WindowData*)context;
+  // check if setting
+  if (data->config_mode) {
+    return;
+  }
   // get current timings
   int64_t epoch_ms = prv_get_epoch_ms();
   int32_t run_time, period_time, period_time_total;
@@ -236,6 +259,32 @@ static void prv_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, prv_up_click_handler);
   window_single_click_subscribe(BUTTON_ID_SELECT, prv_select_click_handler);
   window_single_repeating_click_subscribe(BUTTON_ID_DOWN, 50, prv_down_click_handler);
+}
+
+
+//! AppMessage callback
+//! @param iter Pointer to dictionary iterator sent
+//! @param context Pointer to arbitrary user set data
+static void prv_inbox_recived(DictionaryIterator *iter, void *context) {
+  WindowData *data = (WindowData*)context;
+
+  // change to configuring screen
+  if (dict_find(iter, KEY_CONFIG_OPENED)) {
+    data->config_mode = true;
+    // stop the timer
+    if (data->app_timer) {
+      app_timer_cancel(data->app_timer);
+    }
+    // refresh
+    layer_mark_dirty(data->draw_layer);
+  }
+
+  // change back to standard screen
+  if (dict_find(iter, KEY_CONFIG_CLOSED)) {
+    data->config_mode = false;
+    // start the timer
+    data->app_timer = app_timer_register(REFRESH_RATE_MS_PER_FRAME, prv_app_timer_callback, data);
+  }
 }
 
 
@@ -272,7 +321,12 @@ static void prv_window_load_handler(Window *window) {
     // set some window data properties
     data->start_epoch = 0;
 
+    // load image resources
+    data->config_bmp = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CONFIG);
+
     // open app message communication with the phone
+    app_message_set_context(data);
+    app_message_register_inbox_received(prv_inbox_recived);
     app_message_open(APP_MESSAGE_INBOX_SIZE_MINIMUM, APP_MESSAGE_OUTBOX_SIZE_MINIMUM);
 
     // start first refresh
@@ -293,6 +347,10 @@ static void prv_window_unload_handler(Window *window) {
   WindowData *data = (WindowData*)window_get_user_data(window);
   // check user data
   if (data) {
+    // unregister callbacks
+    app_message_deregister_callbacks();
+    // destroy images
+    gbitmap_destroy(data->config_bmp);
     // free data
     stick_figure_destroy(data->stick_figure);
     drawing_button_destroy(data->button);
@@ -320,7 +378,7 @@ static void initialize(void) {
 
 
 //! Entry point
-//! @return Should not return
+//! @return Returns when app is over
 int main(void) {
   initialize();
   app_event_loop();

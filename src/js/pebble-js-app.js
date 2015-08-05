@@ -112,13 +112,16 @@ function timelineUpdatePins() {
 
 // Show the configuration page when the "gear" icon is clicked
 Pebble.addEventListener('showConfiguration', function() {
+    // send message to c to show the config in phone screen
+    Pebble.sendAppMessage({ KEY_CONFIG_OPENED: true });
+
     var url = 'https://yclepticstudios.github.io/pebble-7-min/config/index.html';
     console.log('Showing configuration page: ' + url);
 
     Pebble.openURL(url);
 });
 
-// Return data to C application when configuration page is closed
+// configuration page closed
 Pebble.addEventListener('webviewclosed', function(e) {
     var configData = JSON.parse(decodeURIComponent(e.response));
     console.log('Configuration page returned: ' + JSON.stringify(configData));
@@ -126,6 +129,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
     // save to persistent storage
     localStorage['reminder_enabled'] = configData['reminder_enabled'];
     localStorage['reminder_time'] = configData['reminder_time'];
+    // send message to c to remove config in phone screen
+    Pebble.sendAppMessage({ KEY_CONFIG_CLOSED: true });
 });
 
 
