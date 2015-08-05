@@ -106,7 +106,7 @@ function deleteUserPin(pin, callback) {
 }
 
 // send a series of pins to the timeline
-function pushPinRecursive(date, count) {
+function pushPinRecursive(date, count, step) {
   // insert pin
   reminderPIN.id = count.toString();
   reminderPIN.time = date;
@@ -114,10 +114,10 @@ function pushPinRecursive(date, count) {
   insertUserPin(reminderPIN, function (responseText) {
     console.log('Pin (' + count + ') Sent Result: ' + responseText);
     // step date to tomorrow
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate() + step);
     // call again if not too deep
     if (count++ < 7) {
-      pushPinRecursive(date, count);
+      pushPinRecursive(date, count, step);
     }
   });
 }
@@ -125,12 +125,15 @@ function timelineUpdatePins() {
   // get time to remind
   var date = new Date (new Date().toDateString() + ' ' + localStorage['reminder_time']);
   // check if enabled
-  if (localStorage['reminder_enabled'] == false) {
-    date.setDate(date.getDate() - 14);
+  var step = 1;
+  var count = 0;
+  if (localStorage['reminder_enabled'] == "false") {
+    date.setDate(date.getDate() - 3);
+    console.log("Old");
+    step = 0;
   }
   // update pins
-  var count = 0;
-  pushPinRecursive(date, count);
+  pushPinRecursive(date, count, step);
 }
 
 
