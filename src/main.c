@@ -152,7 +152,6 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
     }
     // set the new pose
     stick_figure_set_pose(data->stick_figure, cur_pose, epoch_ms);
-    printf("Value: %d", (int)cur_pose);
   }
   // set manual change to false to enable vibrations again
   data->manual_change = false;
@@ -282,6 +281,9 @@ static void prv_inbox_recived(DictionaryIterator *iter, void *context) {
   // change back to standard screen
   if (dict_find(iter, KEY_CONFIG_CLOSED)) {
     data->config_mode = false;
+    // snap animation state
+    stick_figure_snap_pose(data->stick_figure, stick_figure_get_pose(data->stick_figure),
+                           prv_get_epoch_ms());
     // start the timer
     data->app_timer = app_timer_register(REFRESH_RATE_MS_PER_FRAME, prv_app_timer_callback, data);
   }

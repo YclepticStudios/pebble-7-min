@@ -10,11 +10,15 @@ var exercisedPIN = {
   "id": String.prototype.concat("7-min-workout-exercised", Math.random().toString(36).substring(10)),
   "time": curDate.toISOString(),
   "layout": {
-    "type": "genericPin",
+    "type": "weatherPin",
     "title": "Workout Done!",
-    "subtitle": "You did your 7 Min Workout at this time.",
+    "subtitle": curDate.toString(),
     "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
-    "body": "Nice job staying healthy! Keep up the great work ;)"
+    "largeIcon": "system://images/REACHED_FITNESS_GOAL",
+    "locationName": "7 Min+",
+    "headings": ["Congratulations!"],
+    "paragraphs": ["Nice job staying healthy! Keep up the great work ;)"],
+    "backgroundColor": "#00FF00"
   }
 };
 // "Reminder" pin
@@ -22,12 +26,30 @@ var reminderPIN = {
   "id": "7-min-workout-reminder",
   "time": curDate.toISOString(),
   "layout": {
-    "type": "genericPin",
-    "title": "Exercise!",
-    "subtitle": "Remember to do your 7 Min Workout.",
+    "type": "weatherPin",
+    "title": "Remember Your",
+    "subtitle": "7:00",
     "tinyIcon": "system://images/SCHEDULED_EVENT",
-    "body": "C'mon! What are you waiting for? It's only 7 min 50 sec long :)"
-  }
+    "largeIcon": "system://images/SCHEDULED_EVENT",
+    "locationName": "Workout",
+    "headings": ["7 Min+"],
+    "paragraphs": ["C'mon! What are you waiting for? It's only 7 minutes 50 seconds long :)"],
+    "backgroundColor": "#00FF00"
+  },
+  "reminders": [
+  {
+    "time": curDate.toISOString(),
+    "layout": {
+      "type": "genericReminder",
+      "tinyIcon": "system://images/SCHEDULED_EVENT",
+      "title": "Remember your 7 minute workout!"
+    }}],
+  "actions": [
+    {
+      "title": "Launch App",
+      "type": "openWatchApp",
+      "launchCode": 0
+    }]
 };
 
 
@@ -44,27 +66,27 @@ var API_URL_ROOT = 'https://timeline-api.getpebble.com/';
  * @param callback The callback to receive the responseText after the request has completed.
  */
 function timelineRequest(pin, type, callback) {
-    // User or shared?
-    var url = API_URL_ROOT + 'v1/user/pins/' + pin.id;
+  // User or shared?
+  var url = API_URL_ROOT + 'v1/user/pins/' + pin.id;
 
-    // Create XHR
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-        console.log('timeline: response received: ' + this.responseText);
-        callback(this.responseText);
-    };
-    xhr.open(type, url);
+  // Create XHR
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+      console.log('timeline: response received: ' + this.responseText);
+      callback(this.responseText);
+  };
+  xhr.open(type, url);
 
-    // Get token
-    Pebble.getTimelineToken(function (token) {
-        // Add headers
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-User-Token', '' + token);
+  // Get token
+  Pebble.getTimelineToken(function (token) {
+    // Add headers
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-User-Token', '' + token);
 
-        // Send
-        xhr.send(JSON.stringify(pin));
-        console.log('timeline: request sent.');
-    }, function (error) { console.log('timeline: error getting timeline token: ' + error); });
+    // Send
+    xhr.send(JSON.stringify(pin));
+    console.log('timeline: request sent.');
+  }, function (error) { console.log('timeline: error getting timeline token: ' + error); });
 }
 /**
  * Insert a pin into the timeline for this user.
@@ -72,7 +94,7 @@ function timelineRequest(pin, type, callback) {
  * @param callback The callback to receive the responseText after the request has completed.
  */
 function insertUserPin(pin, callback) {
-    timelineRequest(pin, 'PUT', callback);
+  timelineRequest(pin, 'PUT', callback);
 }
 /**
  * Delete a pin from the timeline for this user.
@@ -80,29 +102,35 @@ function insertUserPin(pin, callback) {
  * @param callback The callback to receive the responseText after the request has completed.
  */
 function deleteUserPin(pin, callback) {
-    timelineRequest(pin, 'DELETE', callback);
+  timelineRequest(pin, 'DELETE', callback);
 }
 
 // send a series of pins to the timeline
+function pushPinRecursive(date, count) {
+  // insert pin
+  reminderPIN.id = count.toString();
+  reminderPIN.time = date;
+  reminderPIN.reminders[0].time = date;
+  insertUserPin(reminderPIN, function (responseText) {
+    console.log('Pin (' + count + ') Sent Result: ' + responseText);
+    // step date to tomorrow
+    date.setDate(date.getDate() + 1);
+    // call again if not too deep
+    if (count++ < 7) {
+      pushPinRecursive(date, count);
+    }
+  });
+}
 function timelineUpdatePins() {
-    // get time to remind
-    var date = curDate;
-    date.setHours(localStorage['reminder_time']);
-    // check if enabled
-    if (localStorage['reminder_enabled'] != true) {
-        date.setDate(-7);
-        return;
-    }
-    // update pins
-    for (var ii = 0; ii < 7; ii++) {
-        // insert pin
-        reminderPIN.time = date;
-        insertUserPin(reminderPIN, function (responseText) {
-            console.log('Pin Sent Result: ' + responseText);
-        });
-        // step date to tomorrow
-        date.setDate(1);
-    }
+  // get time to remind
+  var date = new Date (new Date().toDateString() + ' ' + localStorage['reminder_time']);
+  // check if enabled
+  if (localStorage['reminder_enabled'] == false) {
+    date.setDate(date.getDate() - 14);
+  }
+  // update pins
+  var count = 0;
+  pushPinRecursive(date, count);
 }
 
 
@@ -112,25 +140,34 @@ function timelineUpdatePins() {
 
 // Show the configuration page when the "gear" icon is clicked
 Pebble.addEventListener('showConfiguration', function() {
-    // send message to c to show the config in phone screen
-    Pebble.sendAppMessage({ KEY_CONFIG_OPENED: true });
+  // send message to c to show the config in phone screen
+  Pebble.sendAppMessage({ KEY_CONFIG_OPENED: true });
 
-    var url = 'https://yclepticstudios.github.io/pebble-7-min/config/index.html';
-    console.log('Showing configuration page: ' + url);
+  var url = 'https://yclepticstudios.github.io/pebble-7-min/config/index.html';
+  console.log('Showing configuration page: ' + url);
 
-    Pebble.openURL(url);
+  Pebble.openURL(url);
 });
 
 // configuration page closed
 Pebble.addEventListener('webviewclosed', function(e) {
-    var configData = JSON.parse(decodeURIComponent(e.response));
-    console.log('Configuration page returned: ' + JSON.stringify(configData));
+  // send message to c to remove config in phone screen
+  Pebble.sendAppMessage({ KEY_CONFIG_CLOSED: true })
 
-    // save to persistent storage
-    localStorage['reminder_enabled'] = configData['reminder_enabled'];
-    localStorage['reminder_time'] = configData['reminder_time'];
-    // send message to c to remove config in phone screen
-    Pebble.sendAppMessage({ KEY_CONFIG_CLOSED: true });
+  // check if canceled
+  if (e.response === null) {
+    return;
+  }
+
+  // parse data
+  var configData = JSON.parse(decodeURIComponent(e.response));
+  console.log('Configuration page returned: ' + JSON.stringify(configData));
+  // save to persistent storage
+  localStorage['reminder_enabled'] = configData['reminder_enabled'];
+  localStorage['reminder_time'] = configData['reminder_time'];
+
+  // update timeline pins
+  timelineUpdatePins();
 });
 
 
@@ -155,4 +192,5 @@ Pebble.addEventListener('appmessage', function(e) {
 // loaded and ready
 Pebble.addEventListener('ready', function(e) {
   console.log("JS ready!");
+  timelineUpdatePins();
 });
