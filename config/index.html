@@ -65,7 +65,7 @@
     };
 
     // Save for next launch
-    localStorage['reminder_enabled'] = options['reminder_enabled'];
+    localStorage['reminder_enabled'] = options['reminder_enabled'].toString();
     localStorage['reminder_time'] = options['reminder_time'];
 
     console.log('Got options: ' + JSON.stringify(options));
@@ -99,7 +99,7 @@
 
     // Load any previously saved configuration, if available
     if(localStorage['reminder_enabled'] && localStorage['reminder_time']) {
-      enabledToggle.checked = localStorage['reminder_enabled'];
+      enabledToggle.checked = localStorage['reminder_enabled'] == true;
       timeTime.value = localStorage['reminder_time'];
     }
   })();
