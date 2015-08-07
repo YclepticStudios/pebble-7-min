@@ -12,10 +12,10 @@ var exercisedPIN = {
   "layout": {
     "type": "weatherPin",
     "title": "Workout Done!",
-    "subtitle": curDate.toString(),
+    "subtitle": curDate.getHours() + ":" + curDate.getMinutes(),
     "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
     "largeIcon": "system://images/REACHED_FITNESS_GOAL",
-    "locationName": "7 Min+",
+    "locationName": "7-Minute Workout+",
     "headings": ["Congratulations!"],
     "paragraphs": ["Nice job staying healthy! Keep up the great work ;)"],
     "backgroundColor": "#00FF00"
@@ -26,14 +26,12 @@ var reminderPIN = {
   "id": "7-min-workout-reminder",
   "time": curDate.toISOString(),
   "layout": {
-    "type": "weatherPin",
-    "title": "Remember Your",
-    "subtitle": "7:00",
-    "tinyIcon": "system://images/SCHEDULED_EVENT",
-    "largeIcon": "system://images/SCHEDULED_EVENT",
-    "locationName": "Workout",
-    "headings": ["7 Min+"],
-    "paragraphs": ["C'mon! What are you waiting for? It's only 7 minutes 50 seconds long :)"],
+    "type": "genericPin",
+    "title": "Time to Work Out!",
+    "subtitle": "7-Minute Workout+",
+    "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
+    "largeIcon": "system://images/REACHED_FITNESS_GOAL",
+    "body": "C'mon! What are you waiting for? It's only 7 minutes 50 seconds long :)",
     "backgroundColor": "#00FF00"
   },
   "reminders": [
@@ -41,8 +39,8 @@ var reminderPIN = {
     "time": curDate.toISOString(),
     "layout": {
       "type": "genericReminder",
-      "tinyIcon": "system://images/SCHEDULED_EVENT",
-      "title": "Remember your 7 minute workout!"
+      "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
+      "title": "Don't forget to do your 7 minute workout!"
     }}],
   "actions": [
     {
