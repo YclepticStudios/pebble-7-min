@@ -19,9 +19,9 @@
   "resources": {
     "media": [
       {
-          "type": "png",
-          "name": "IMAGE_GRID_1",
-          "file": "images/grid_4x4_1.png"
+        "type": "png",
+        "name": "IMAGE_GRID_1",
+        "file": "images/grid_4x4_1.png"
       },
       {
         "type": "png",

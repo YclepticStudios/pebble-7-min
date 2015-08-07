@@ -18,7 +18,7 @@
 #define KEY_CONFIG_OPENED 1 // key used when configuration page is opened
 #define KEY_CONFIG_CLOSED 2 // key used when configuration page is closed
 
-#define REFRESH_RATE_FPS 24
+#define REFRESH_RATE_FPS 20
 #define REFRESH_RATE_MS_PER_FRAME 1000 / REFRESH_RATE_FPS
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
 #define EXERCISE_REST_PERIOD 10000 // length of a rest is in milliseconds
@@ -32,6 +32,8 @@ typedef struct WindowData {
   Window        *window;        //!< Pointer to the window the data is attached to
   Layer         *draw_layer;    //!< Pointer to layer on which most things are drawn
   GBitmap       *config_bmp;    //!< Pointer to "Configure in phone" message
+  GBitmap       *grid_1_bmp;    //!< Pointer to medium gray grid
+  GBitmap       *grid_2_bmp;    //!< Pointer to dark gray grid
 
   StickFigure   *stick_figure;  //!< Pointer to the stick figure which will be used
   Button        *button;        //!< Pointer to the button in the center of the screen
@@ -157,8 +159,9 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   data->manual_change = false;
 
   // draw the visuals on the screen
-  drawing_background(ctx, window_size, angle, cur_pose, NULL);
-  drawing_button_draw(data->button, ctx, window_size, cur_pose);
+  GBitmap *bmp_gray = (cur_pose == PoseResting) ? data->grid_2_bmp : data->grid_1_bmp;
+  drawing_background(ctx, window_size, angle, cur_pose, bmp_gray);
+  drawing_button_draw(data->button, ctx, window_size, cur_pose, bmp_gray);
   stick_figure_draw(data->stick_figure, ctx, offset);
   stick_figure_draw_props(ctx, cur_pose, offset);
   // draw text
@@ -325,6 +328,8 @@ static void prv_window_load_handler(Window *window) {
 
     // load image resources
     data->config_bmp = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CONFIG);
+    data->grid_1_bmp = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_GRID_1);
+    data->grid_2_bmp = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_GRID_2);
 
     // open app message communication with the phone
     app_message_set_context(data);
@@ -353,6 +358,8 @@ static void prv_window_unload_handler(Window *window) {
     app_message_deregister_callbacks();
     // destroy images
     gbitmap_destroy(data->config_bmp);
+    gbitmap_destroy(data->grid_1_bmp);
+    gbitmap_destroy(data->grid_2_bmp);
     // free data
     stick_figure_destroy(data->stick_figure);
     drawing_button_destroy(data->button);
@@ -371,6 +378,9 @@ static void prv_window_unload_handler(Window *window) {
 //! Initialize Window object
 static void initialize(void) {
   Window *window = window_create();
+#ifndef PBL_SDK_3
+  window_set_fullscreen(window, true);
+#endif
   window_set_window_handlers(window, (WindowHandlers) {
     .load = prv_window_load_handler,
     .unload = prv_window_unload_handler,

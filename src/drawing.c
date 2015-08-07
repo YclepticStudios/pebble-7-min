@@ -175,7 +175,8 @@ void drawing_button_step_animation(Button *button, int64_t epoch_ms) {
 
 
 // Draw the button onto the drawing context
-void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8_t pose) {
+void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8_t pose,
+                         GBitmap *bmp) {
   // set fill color
   GColor fore_color = COLOR_PLAYING_FORE;
   if (pose == PoseWaitingForStart || pose == PoseDone) {
@@ -198,12 +199,18 @@ void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8
   gpath_move_to(path, GPoint(window_size.w / 2, window_size.h / 2));
   gpath_draw_filled(ctx, path);
   gpath_destroy(path);
+  // if aplite, cover with gray
+#ifndef PBL_COLOR
+  graphics_context_set_compositing_mode(ctx, GCompOpOr);
+  graphics_draw_bitmap_in_rect(ctx, bmp, GRect(32, 42, 80, 80));
+#endif
 }
 
 
 // Draw background in center of window
 void drawing_background(GContext *ctx, GSize window_size, uint32_t angle, uint8_t pose,
                         GBitmap *bmp) {
+#ifdef PBL_COLOR
   // draw background color of window
   // this is actually the color of the progress ring, which is then covered up to give
   // the appearance of progress
@@ -219,20 +226,26 @@ void drawing_background(GContext *ctx, GSize window_size, uint32_t angle, uint8_
   }
   graphics_context_set_fill_color(ctx, fore_color);
   graphics_fill_rect(ctx, GRect(0, 0, window_size.w, window_size.h), 1, GCornerNone);
+#else
+  GColor back_color = COLOR_PLAYING_BACK;
+  graphics_draw_bitmap_in_rect(ctx, bmp, GRect(0, 0, window_size.w, window_size.h));
+#endif
   // draw the cover for the progress ring
   prv_draw_progress_ring(ctx, window_size, angle);
   // draw the center circle
   graphics_context_set_fill_color(ctx, back_color);
   graphics_fill_circle(ctx, GPoint(window_size.w / 2, window_size.h / 2), CIRCLE_RADIUS);
-  // draw the play/pause button
-  graphics_context_set_fill_color(ctx, fore_color);
 }
 
 
 // Draw text onto the image
 void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, bool in_activity,
                   bool unstarted) {
+#ifdef PBL_COLOR
   graphics_context_set_text_color(ctx, GColorBlack);
+#else
+  graphics_context_set_text_color(ctx, GColorWhite);
+#endif
   const char *buff;
   if (unstarted) {
     buff = StickFigureRestName[PoseWaitingForStart];
