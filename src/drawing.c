@@ -16,6 +16,8 @@
 
 #define BUTTON_ANIMATION_DURATION 180 // milliseconds
 
+#define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
+
 #ifdef PBL_COLOR
 #define COLOR_BACKGROUND GColorDarkGray
 #define COLOR_PLAYING_FORE GColorOrange
@@ -239,8 +241,8 @@ void drawing_background(GContext *ctx, GSize window_size, uint32_t angle, uint8_
 
 
 // Draw text onto the image
-void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, bool in_activity,
-                  bool unstarted) {
+void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t period_time,
+                  bool in_activity, bool unstarted) {
 #ifdef PBL_COLOR
   graphics_context_set_text_color(ctx, GColorBlack);
 #else
@@ -259,6 +261,15 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, bool in_ac
   graphics_draw_text(ctx, buff, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
     GRect(0, window_size.h - 20, window_size.w, 20), GTextOverflowModeTrailingEllipsis,
     GTextAlignmentCenter, NULL);
+
+  // draw "Switch" half way through the side planks
+  if (activity == 13 && period_time >= EXERCISE_ACTIVITY_PERIOD / 2 &&
+      period_time < EXERCISE_ACTIVITY_PERIOD / 2 + 5000) {
+    graphics_context_set_text_color(ctx, GColorBlack);
+    graphics_draw_text(ctx, "Switch", fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
+                       GRect(0, window_size.h / 2 + 35, window_size.w, 20),
+                       GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+  }
 }
 
 

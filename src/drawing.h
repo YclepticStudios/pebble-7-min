@@ -54,10 +54,11 @@ void drawing_background(GContext *ctx, GSize window_size, uint32_t angle, uint8_
 //! @param ctx Graphics context to draw on
 //! @param window_size The size of the window being drawn on
 //! @param activity The number of the activity currently in
+//! @param period_time The time into the current exercise in milliseconds
 //! @param in_activity If it is currently in one of the activities, not resting
 //! @param unstarted If it is still at the first screen and unstarted
-void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, bool in_activity,
-                  bool unstarted);
+void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t period_time,
+                  bool in_activity, bool unstarted);
 
 //! Draw configure on phone dialog
 //! @param ctx Graphics context to draw on

@@ -121,10 +121,6 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
     return;
   }
 
-  // step animations
-  stick_figure_step_animation(data->stick_figure, epoch_ms);
-  drawing_button_step_animation(data->button, epoch_ms);
-
   // get timing values
   int32_t run_time, period_time, period_time_total;
   prv_get_current_timing(data, epoch_ms, &run_time, &period_time, &period_time_total);
@@ -141,6 +137,8 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
     angle = 0;
   } else if (period_time_total == EXERCISE_REST_PERIOD) {
     cur_pose = PoseResting;
+  } else if (cur_pose == PoseSidePlanks && period_time >= EXERCISE_ACTIVITY_PERIOD / 2) {
+    cur_pose = PoseSidePlanksSwapped;
   }
   StickFigurePose old_pose = stick_figure_get_pose(data->stick_figure);
   if (cur_pose != old_pose) {
@@ -158,6 +156,11 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   // set manual change to false to enable vibrations again
   data->manual_change = false;
 
+  // step animations
+  stick_figure_step_animation(data->stick_figure, epoch_ms);
+  drawing_button_step_animation(data->button, epoch_ms);
+
+
   // draw the visuals on the screen
   GBitmap *bmp_gray = (cur_pose == PoseResting) ? data->grid_2_bmp : data->grid_1_bmp;
   drawing_background(ctx, window_size, angle, cur_pose, bmp_gray);
@@ -169,8 +172,8 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   if (cur_pose == PoseDone) {
     cur_activity = PoseDone;
   }
-  drawing_text(ctx, window_size, cur_activity, period_time_total == EXERCISE_ACTIVITY_PERIOD,
-               run_time == 1);
+  drawing_text(ctx, window_size, cur_activity, period_time,
+               period_time_total == EXERCISE_ACTIVITY_PERIOD, run_time == 1);
 }
 
 

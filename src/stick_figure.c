@@ -152,6 +152,10 @@ static const SkeletonFrame skeleton_data_done[] = {
     {8, 400, 200, CurveSinEaseOut, {0, -30}, {0, -10}, {-11, -12}, {-20, -22}, {11, -12}, {20, -22}, {0, 15}, {-8, 29}, {-10, 44}, {8, 29}, {10, 44}},
     {8, 400, 200, CurveSinEaseOut, {0, -30}, {0, -10}, {-9, -3}, {-13, 9}, {9, -3}, {13, 9}, {0, 15}, {-8, 29}, {-10, 44}, {8, 29}, {10, 44}},
     {8, 400, 200, CurveSinEaseOut, {-5, -29}, {-3, -8}, {-15, -4}, {-6, -13}, {8, -12}, {18, -21}, {-2, 17}, {-8, 31}, {-10, 44}, {6, 29}, {10, 44}}};
+// Side plank swapped (nasty little bit of inconsistency in the exercise)
+static const SkeletonFrame skeleton_data_side_plank_swapped[] = {
+    {2, 400, 400, CurveSinEaseInOut, {-29, 2}, {-7, 6}, {4, 1}, {16, 1}, {-6, 18}, {-11, 19}, {16, 9}, {30, 9}, {44, 12}, {28, 18}, {43, 19}},
+    {2, 400, 1200, CurveSinEaseInOut, {-29, 4}, {-7, 6}, {4, 1}, {16, 1}, {-6, 18}, {-11, 19}, {16, 9}, {30, 9}, {44, 12}, {28, 18}, {43, 19}}};
 // Array of data animations
 static const SkeletonFrame *skeleton_frame_data[] = {
   skeleton_data_rest,
@@ -168,7 +172,8 @@ static const SkeletonFrame *skeleton_frame_data[] = {
   skeleton_data_lunges,
   skeleton_data_pushups_rotations,
   skeleton_data_side_plank,
-  skeleton_data_done
+  skeleton_data_done,
+  skeleton_data_side_plank_swapped
 };
 
 

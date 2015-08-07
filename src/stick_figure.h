@@ -38,7 +38,8 @@ typedef enum StickFigurePose {
   PoseLunges,
   PosePushupsAndRotations,
   PoseSidePlanks,
-  PoseDone
+  PoseDone,
+  PoseSidePlanksSwapped
 } StickFigurePose;
 
 
