@@ -287,7 +287,7 @@ void drawing_config(GContext *ctx, GSize window_size, GBitmap *bmp) {
                                                (window_size.h - bmp_size.size.h) / 2 - 5,
                                                bmp_size.size.w, bmp_size.size.h));
   // draw title
-  graphics_draw_text(ctx, "7 Min+", fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD),
+  graphics_draw_text(ctx, "7 Minute+", fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD),
                      GRect(0, 7, window_size.w, 28), GTextOverflowModeFill,
                      GTextAlignmentCenter, NULL);
   // draw footer

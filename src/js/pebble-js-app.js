@@ -12,10 +12,10 @@ var exercisedPIN = {
   "layout": {
     "type": "weatherPin",
     "title": "Workout Done!",
-    "subtitle": curDate.getHours() + ":" + curDate.getMinutes(),
+    "subtitle": "00:00",
     "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
     "largeIcon": "system://images/REACHED_FITNESS_GOAL",
-    "locationName": "7-Minute Workout+",
+    "locationName": "7-Minute+",
     "headings": ["Congratulations!"],
     "paragraphs": ["Nice job staying healthy! Keep up the great work ;)"],
     "backgroundColor": "#00FF00"
@@ -28,7 +28,8 @@ var reminderPIN = {
   "layout": {
     "type": "genericPin",
     "title": "Time to Work Out!",
-    "subtitle": "7-Minute Workout+",
+    "subtitle": "7-Minute+",
+    "primaryColor": "Black",
     "tinyIcon": "system://images/REACHED_FITNESS_GOAL",
     "largeIcon": "system://images/REACHED_FITNESS_GOAL",
     "body": "C'mon! What are you waiting for? It's only 7 minutes 50 seconds long :)",
@@ -49,6 +50,23 @@ var reminderPIN = {
       "launchCode": 0
     }]
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Utilities
+//
+
+// format a date object into a 12 hr AM/PM string
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +128,6 @@ function pushPinRecursive(date, count, step) {
   reminderPIN.time = date;
   reminderPIN.reminders[0].time = date;
   insertUserPin(reminderPIN, function (responseText) {
-    console.log('Pin (' + count + ') Sent Result: ' + responseText);
     // step date to tomorrow
     date.setDate(date.getDate() + step);
     // call again if not too deep
@@ -127,7 +144,6 @@ function timelineUpdatePins() {
   var count = 0;
   if (localStorage['reminder_enabled'] == "false") {
     date.setDate(date.getDate() - 3);
-    console.log("Old");
     step = 0;
   }
   // update pins
@@ -182,6 +198,8 @@ Pebble.addEventListener('appmessage', function(e) {
   if (e.payload.hasOwnProperty('KEY_EXERSIZED')){
     // check that it is valid to send pins i.e. its SDK 3.0 or greater
     if (typeof Pebble.getTimelineToken == 'function') {
+      // add time
+      exercisedPIN.layout.subtitle = formatAMPM(new Date);
       // insert pin
       insertUserPin(exercisedPIN, function (responseText) {
         console.log('Pin Sent Result: ' + responseText);
