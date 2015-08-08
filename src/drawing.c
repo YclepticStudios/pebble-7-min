@@ -277,12 +277,18 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t pe
 void drawing_config(GContext *ctx, GSize window_size, GBitmap *bmp) {
   // set drawing colors
   graphics_context_set_fill_color(ctx, COLOR_PAUSED_FORE);
+#ifdef PBL_COLOR
   graphics_context_set_text_color(ctx, GColorBlack);
+#else
+  graphics_context_set_text_color(ctx, GColorWhite);
+#endif
   // draw background
   graphics_fill_rect(ctx, GRect(0, 0, window_size.w, window_size.h), 1, GCornerNone);
   // draw image
   GRect bmp_size = gbitmap_get_bounds(bmp);
+#ifdef PBL_COLOR
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
+#endif
   graphics_draw_bitmap_in_rect(ctx, bmp, GRect((window_size.w - bmp_size.size.w) / 2,
                                                (window_size.h - bmp_size.size.h) / 2 - 5,
                                                bmp_size.size.w, bmp_size.size.h));

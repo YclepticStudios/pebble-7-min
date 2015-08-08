@@ -31,7 +31,14 @@
       {
         "type": "png",
         "name": "IMAGE_CONFIG",
-        "file": "images/config-required.png"
+        "file": "images/config-required-bw.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_CONFIG",
+        "file": "images/config-required.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
