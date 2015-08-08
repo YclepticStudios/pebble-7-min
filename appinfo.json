@@ -32,6 +32,12 @@
         "type": "png",
         "name": "IMAGE_CONFIG",
         "file": "images/config-required.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_ICON",
+        "file": "images/menu-icon.png",
+        "menuIcon": true
       }
       ]
   }
