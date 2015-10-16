@@ -5,7 +5,7 @@
   "companyName": "Ycleptic Studios",
   "versionLabel": "1.0",
   "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt"],
+  "targetPlatforms": ["aplite", "basalt", "chalk"],
   "projectType": "native",
   "capabilities": [ "configurable" ],
   "watchapp": {
@@ -31,19 +31,19 @@
       {
         "type": "png",
         "name": "IMAGE_CONFIG",
-        "file": "images/config-required-bw.png",
+        "file": "images/config_required_bw.png",
         "targetPlatforms": ["aplite"]
       },
       {
         "type": "png",
         "name": "IMAGE_CONFIG",
-        "file": "images/config-required.png",
-        "targetPlatforms": ["basalt"]
+        "file": "images/config_required.png",
+        "targetPlatforms": ["basalt", "chalk"]
       },
       {
         "type": "png",
         "name": "IMAGE_ICON",
-        "file": "images/menu-icon.png",
+        "file": "images/menu_icon.png",
         "menuIcon": true
       }
       ]

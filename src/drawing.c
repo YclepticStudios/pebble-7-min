@@ -13,28 +13,21 @@
 #include "interpolation.h"
 
 #define CIRCLE_RADIUS 60
-
+#ifdef PBL_ROUND
+#define FOOTER_TEXT_Y_OFFSET -30
+#else
+#define FOOTER_TEXT_Y_OFFSET -20
+#endif
 #define BUTTON_ANIMATION_DURATION 180 // milliseconds
-
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
 
-#ifdef PBL_COLOR
-#define COLOR_BACKGROUND GColorDarkGray
-#define COLOR_PLAYING_FORE GColorOrange
-#define COLOR_PLAYING_BACK GColorPastelYellow
-#define COLOR_PAUSED_FORE GColorGreen
-#define COLOR_PAUSED_BACK GColorMintGreen
-#define COLOR_RESTING_FORE GColorVividCerulean
-#define COLOR_RESTING_BACK GColorCeleste
-#else
-#define COLOR_BACKGROUND GColorBlack
-#define COLOR_PLAYING_FORE GColorBlack
-#define COLOR_PLAYING_BACK GColorWhite
-#define COLOR_PAUSED_FORE GColorBlack
-#define COLOR_PAUSED_BACK GColorWhite
-#define COLOR_RESTING_FORE GColorBlack
-#define COLOR_RESTING_BACK GColorWhite
-#endif
+#define COLOR_BACKGROUND COLOR_FALLBACK(GColorDarkGray, GColorBlack)
+#define COLOR_PLAYING_FORE COLOR_FALLBACK(GColorOrange, GColorBlack)
+#define COLOR_PLAYING_BACK COLOR_FALLBACK(GColorPastelYellow, GColorWhite)
+#define COLOR_PAUSED_FORE COLOR_FALLBACK(GColorGreen, GColorBlack)
+#define COLOR_PAUSED_BACK COLOR_FALLBACK(GColorMintGreen, GColorWhite)
+#define COLOR_RESTING_FORE COLOR_FALLBACK(GColorVividCerulean, GColorBlack)
+#define COLOR_RESTING_BACK COLOR_FALLBACK(GColorCeleste, GColorWhite)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,11 +236,7 @@ void drawing_background(GContext *ctx, GSize window_size, uint32_t angle, uint8_
 // Draw text onto the image
 void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t period_time,
                   bool in_activity, bool unstarted) {
-#ifdef PBL_COLOR
-  graphics_context_set_text_color(ctx, GColorBlack);
-#else
-  graphics_context_set_text_color(ctx, GColorWhite);
-#endif
+  graphics_context_set_text_color(ctx, COLOR_FALLBACK(GColorBlack, GColorWhite));
   const char *buff;
   if (unstarted) {
     buff = StickFigureRestName[PoseWaitingForStart];
@@ -259,8 +248,8 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t pe
     buff = StickFigureRestName[activity];
   }
   graphics_draw_text(ctx, buff, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
-    GRect(0, window_size.h - 20, window_size.w, 20), GTextOverflowModeTrailingEllipsis,
-    GTextAlignmentCenter, NULL);
+    GRect(0, window_size.h + FOOTER_TEXT_Y_OFFSET, window_size.w, 20),
+    GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
 
   // draw "Switch" half way through the side planks
   if (activity == 13 && period_time >= EXERCISE_ACTIVITY_PERIOD / 2 &&
