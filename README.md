@@ -12,9 +12,6 @@ Please note, the 7-Minute Workout is not something which I came up with. It was 
 publicized by the New York Times. 
 http://well.blogs.nytimes.com/2013/05/09/the-scientific-7-minute-workout/
 
-![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots
-/chalk-animated.gif)
-![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots
-/basalt-animated.gif)
-![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots
-/aplite-animated.gif)
+![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots/chalk-animated.gif)
+![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots/basalt-animated.gif)
+![7-Minute+ Pebble](https://raw.github.com/YclepticStudios/pebble-7-min/master/assets/screenshots/aplite-animated.gif)
