@@ -3,7 +3,7 @@
   "shortName": "7-Minute Plus",
   "longName": "7-Minute Plus",
   "companyName": "Ycleptic Studios",
-  "versionLabel": "1.0",
+  "versionLabel": "1.1",
   "sdkVersion": "3",
   "targetPlatforms": ["aplite", "basalt", "chalk"],
   "projectType": "native",
