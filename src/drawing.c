@@ -75,6 +75,7 @@ static GPoint prv_polar_to_rectangular(GPoint center, uint32_t angle, uint16_t r
 // Draw the gray cover over part of the progress ring
 static void prv_draw_progress_ring(GContext *ctx, GSize window_size, uint32_t angle) {
   graphics_context_set_fill_color(ctx, COLOR_BACKGROUND);
+#ifdef PBL_SDK_2
   // get step angle and exit if too small
   int32_t step = angle / 4;
   if (step < 1) {
@@ -101,6 +102,18 @@ static void prv_draw_progress_ring(GContext *ctx, GSize window_size, uint32_t an
   GPath *path = gpath_create(&info);
   gpath_draw_filled(ctx, path);
   gpath_destroy(path);
+#else
+  // calculate ring bounds size
+  int32_t gr_angle = atan2_lookup(window_size.h, window_size.w);
+  int32_t radius = (window_size.h / 2) * TRIG_MAX_RATIO / sin_lookup(gr_angle);
+  GRect bounds;
+  bounds.origin.x = window_size.w / 2 - radius;
+  bounds.origin.y = window_size.h / 2 - radius;
+  bounds.size.w = bounds.size.h = radius * 2;
+  angle = TRIG_MAX_ANGLE - angle;
+  // draw ring on context
+  graphics_fill_radial(ctx, bounds, GOvalScaleModeFillCircle, radius, angle, TRIG_MAX_ANGLE);
+#endif
 }
 
 
