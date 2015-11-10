@@ -1,8 +1,8 @@
 # pebble-7-min
 7-Minute+ is a simple workout app for your Pebble Smartwatch. It is available for both the original 
-black and white Pebbles as well as for the Pebble Time. It consists of twelve different thirty 
-second exercises separated by ten second rests, each of which is illustrated by an animated stick 
-figure.
+black and white Pebbles as well as for the Pebble Time and Pebble Time Round. It consists of twelve 
+different thirty second exercises separated by ten second rests, each of which is illustrated by 
+an animated stick figure.
 
 Clicking "Select" at any time will pause and resume the exercise, while clicking "Up" or "Down" 
 will skip to the previous and next exercises. You can also configure the app to send you pins on 
