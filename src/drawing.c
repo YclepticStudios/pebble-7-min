@@ -12,11 +12,20 @@
 #include "stick_figure.h"
 #include "interpolation.h"
 
-#define CIRCLE_RADIUS 60
 #ifdef PBL_ROUND
-#define FOOTER_TEXT_Y_OFFSET -30
+#define FOOTER_TEXT_X_OFFSET window_size.w / 4
+#define FOOTER_TEXT_Y_OFFSET window_size.h - 38
+#define FOOTER_TEXT_WIDTH window_size.w / 2
+#define FOOTER_TEXT_HEIGHT 35
+#define FOOTER_TEXT_OVERFLOW_MODE GTextOverflowModeWordWrap
+#define CIRCLE_RADIUS 52
 #else
-#define FOOTER_TEXT_Y_OFFSET -20
+#define FOOTER_TEXT_X_OFFSET 0
+#define FOOTER_TEXT_Y_OFFSET window_size.h - 20
+#define FOOTER_TEXT_WIDTH window_size.w
+#define FOOTER_TEXT_HEIGHT 20
+#define FOOTER_TEXT_OVERFLOW_MODE GTextOverflowModeTrailingEllipsis
+#define CIRCLE_RADIUS 60
 #endif
 #define BUTTON_ANIMATION_DURATION 180 // milliseconds
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
@@ -261,8 +270,8 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t pe
     buff = StickFigureRestName[activity];
   }
   graphics_draw_text(ctx, buff, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
-    GRect(0, window_size.h + FOOTER_TEXT_Y_OFFSET, window_size.w, 20),
-    GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+    GRect(FOOTER_TEXT_X_OFFSET, FOOTER_TEXT_Y_OFFSET, FOOTER_TEXT_WIDTH, FOOTER_TEXT_HEIGHT),
+    FOOTER_TEXT_OVERFLOW_MODE, GTextAlignmentCenter, NULL);
 
   // draw "Switch" half way through the side planks
   if (activity == 13 && period_time >= EXERCISE_ACTIVITY_PERIOD / 2 &&
