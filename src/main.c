@@ -144,7 +144,7 @@ static void prv_layer_update_proc_handler(Layer *layer, GContext *ctx) {
   if (cur_pose != old_pose) {
     // vibrate if not at start or end
     if (!data->manual_change){
-      vibes_double_pulse();
+      PBL_IF_ROUND_ELSE(vibes_double_pulse(), vibes_short_pulse());
       // send a pin if last exercise
       if (cur_pose == PoseDone) {
         prv_phone_send_pin();
