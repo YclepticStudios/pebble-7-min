@@ -1,51 +1,63 @@
 {
-  "uuid": "06f58779-f748-484e-b3f0-759ee877c34d",
-  "shortName": "7-Minute Plus",
-  "longName": "7-Minute Plus",
-  "companyName": "Ycleptic Studios",
-  "versionLabel": "1.1",
-  "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt", "chalk"],
-  "projectType": "native",
-  "capabilities": [ "configurable" ],
-  "watchapp": {
-    "watchface": false
-  },
-  "appKeys": {
-    "KEY_EXERSIZED": 0,
-    "KEY_CONFIG_OPENED": 1,
-    "KEY_CONFIG_CLOSED": 2
-  },
-  "resources": {
-    "media": [
-      {
-        "type": "png",
-        "name": "IMAGE_GRID_1",
-        "file": "images/grid_4x4_1.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_GRID_2",
-        "file": "images/grid_4x4_2.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_CONFIG",
-        "file": "images/config_required_bw.png",
-        "targetPlatforms": ["aplite"]
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_CONFIG",
-        "file": "images/config_required.png",
-        "targetPlatforms": ["basalt", "chalk"]
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_ICON",
-        "file": "images/menu_icon.png",
-        "menuIcon": true
-      }
-      ]
-  }
+    "appKeys": {
+        "KEY_CONFIG_CLOSED": 2,
+        "KEY_CONFIG_OPENED": 1,
+        "KEY_EXERSIZED": 0
+    },
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "Ycleptic Studios",
+    "enableMultiJS": false,
+    "longName": "7-Minute Plus",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menu_icon.png",
+                "menuIcon": true,
+                "name": "IMAGE_ICON",
+                "type": "png"
+            },
+            {
+                "file": "images/grid_4x4_2.png",
+                "name": "IMAGE_GRID_2",
+                "type": "png"
+            },
+            {
+                "file": "images/grid_4x4_1.png",
+                "name": "IMAGE_GRID_1",
+                "type": "png"
+            },
+            {
+                "file": "images/config_required_bw.png",
+                "name": "IMAGE_CONFIG",
+                "targetPlatforms": [
+                    "aplite"
+                ],
+                "type": "png"
+            },
+            {
+                "file": "images/config_required.png",
+                "name": "IMAGE_CONFIG",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "7-Minute Plus",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "06f58779-f748-484e-b3f0-759ee877c34d",
+    "versionLabel": "1.1",
+    "watchapp": {
+        "watchface": false
+    }
 }

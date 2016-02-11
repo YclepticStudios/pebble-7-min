@@ -12,11 +12,20 @@
 #include "stick_figure.h"
 #include "interpolation.h"
 
-#define CIRCLE_RADIUS 60
 #ifdef PBL_ROUND
-#define FOOTER_TEXT_Y_OFFSET -30
+#define FOOTER_TEXT_X_OFFSET window_size.w / 4
+#define FOOTER_TEXT_Y_OFFSET window_size.h - 38
+#define FOOTER_TEXT_WIDTH window_size.w / 2
+#define FOOTER_TEXT_HEIGHT 35
+#define FOOTER_TEXT_OVERFLOW_MODE GTextOverflowModeWordWrap
+#define CIRCLE_RADIUS 52
 #else
-#define FOOTER_TEXT_Y_OFFSET -20
+#define FOOTER_TEXT_X_OFFSET 0
+#define FOOTER_TEXT_Y_OFFSET window_size.h - 20
+#define FOOTER_TEXT_WIDTH window_size.w
+#define FOOTER_TEXT_HEIGHT 20
+#define FOOTER_TEXT_OVERFLOW_MODE GTextOverflowModeTrailingEllipsis
+#define CIRCLE_RADIUS 60
 #endif
 #define BUTTON_ANIMATION_DURATION 180 // milliseconds
 #define EXERCISE_ACTIVITY_PERIOD 30000 // length of an activity is in milliseconds
@@ -185,13 +194,20 @@ void drawing_button_step_animation(Button *button, int64_t epoch_ms) {
 // Draw the button onto the drawing context
 void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8_t pose,
                          GBitmap *bmp) {
-  // set fill color
+  // set fill color, use gray for Aplite
+#ifdef PBL_COLOR
   GColor fore_color = COLOR_PLAYING_FORE;
   if (pose == PoseWaitingForStart || pose == PoseDone) {
     fore_color = COLOR_PAUSED_FORE;
   } else if (pose == PoseResting) {
     fore_color = COLOR_RESTING_FORE;
   }
+#else
+  GColor fore_color = GColorLightGray;
+  if (pose == PoseResting) {
+    fore_color = GColorDarkGray;
+  }
+#endif
   graphics_context_set_fill_color(ctx, fore_color);
   // draw as path
   GPathInfo button_path = {
@@ -207,11 +223,6 @@ void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8
   gpath_move_to(path, GPoint(window_size.w / 2, window_size.h / 2));
   gpath_draw_filled(ctx, path);
   gpath_destroy(path);
-  // if aplite, cover with gray
-#ifndef PBL_COLOR
-  graphics_context_set_compositing_mode(ctx, GCompOpOr);
-  graphics_draw_bitmap_in_rect(ctx, bmp, GRect(32, 42, 80, 80));
-#endif
 }
 
 
@@ -261,8 +272,8 @@ void drawing_text(GContext *ctx, GSize window_size, uint8_t activity, int32_t pe
     buff = StickFigureRestName[activity];
   }
   graphics_draw_text(ctx, buff, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
-    GRect(0, window_size.h + FOOTER_TEXT_Y_OFFSET, window_size.w, 20),
-    GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+    GRect(FOOTER_TEXT_X_OFFSET, FOOTER_TEXT_Y_OFFSET, FOOTER_TEXT_WIDTH, FOOTER_TEXT_HEIGHT),
+    FOOTER_TEXT_OVERFLOW_MODE, GTextAlignmentCenter, NULL);
 
   // draw "Switch" half way through the side planks
   if (activity == 13 && period_time >= EXERCISE_ACTIVITY_PERIOD / 2 &&
