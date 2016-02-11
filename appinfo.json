@@ -8,6 +8,7 @@
         "configurable"
     ],
     "companyName": "Ycleptic Studios",
+    "enableMultiJS": false,
     "longName": "7-Minute Plus",
     "projectType": "native",
     "resources": {

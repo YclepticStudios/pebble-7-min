@@ -194,13 +194,20 @@ void drawing_button_step_animation(Button *button, int64_t epoch_ms) {
 // Draw the button onto the drawing context
 void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8_t pose,
                          GBitmap *bmp) {
-  // set fill color
+  // set fill color, use gray for Aplite
+#ifdef PBL_COLOR
   GColor fore_color = COLOR_PLAYING_FORE;
   if (pose == PoseWaitingForStart || pose == PoseDone) {
     fore_color = COLOR_PAUSED_FORE;
   } else if (pose == PoseResting) {
     fore_color = COLOR_RESTING_FORE;
   }
+#else
+  GColor fore_color = GColorLightGray;
+  if (pose == PoseResting) {
+    fore_color = GColorDarkGray;
+  }
+#endif
   graphics_context_set_fill_color(ctx, fore_color);
   // draw as path
   GPathInfo button_path = {
@@ -216,11 +223,6 @@ void drawing_button_draw(Button *button, GContext *ctx, GSize window_size, uint8
   gpath_move_to(path, GPoint(window_size.w / 2, window_size.h / 2));
   gpath_draw_filled(ctx, path);
   gpath_destroy(path);
-  // if aplite, cover with gray
-#ifndef PBL_COLOR
-  graphics_context_set_compositing_mode(ctx, GCompOpOr);
-  graphics_draw_bitmap_in_rect(ctx, bmp, GRect(32, 42, 80, 80));
-#endif
 }
 
 
